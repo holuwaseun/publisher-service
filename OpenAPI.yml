@@ -1,0 +1,93 @@
+openapi: 3.0.0
+
+info:
+  title: Publisher Service
+  description: Pangea Publisher Service
+  version: 0.0.1
+
+servers:
+  - url: 'http://127.0.0.1:1993/publisher/api/v1/'
+    description: 'Local Server'
+
+tags:
+  - name: 'Publish'
+  - name: 'Subscribe'
+
+paths:
+  /publish/:topic:
+    post:
+      tags: ['Publish']
+      description: 'publish a message to a topic'
+      operationId: 'publishMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/publish'
+      responses:
+        '200':
+          description: 'message published successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/publish-success'
+
+  /subscribe/:topic:
+    post:
+      tags: ['Subscribe']
+      description: 'subscribe to a topic'
+      operationId: 'subscribeTopic'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/subscribe'
+      responses:
+        '200':
+          description: 'topic subscription successful'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/subscribe-success'
+
+components:
+  schemas:
+    publish:
+      type: object
+      description: 'publish message'
+      example: {"age": 9, "user": "adams"}
+
+    subscribe:
+      type: object
+      properties:
+        url:
+          type: string
+          description: 'subscriber url'
+          example: 'http://localhost:1996/subscriber/api/v1/test1'
+      required:
+        - url
+
+    publish-success:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'server message'
+          example: 'OK'
+
+    subscribe-success:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'server message'
+          example: 'OK'
+
+  parameters:
+    topic:
+      in: path
+      name: topic
+      required: true
+      schema:
+        type: string
+      description: 'topic'
